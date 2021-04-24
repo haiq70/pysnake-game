@@ -2,6 +2,7 @@
 # pygame documentation: https://www.pygame.org/docs/
 import pygame
 import time
+import random
 
 pygame.display.init()
 
@@ -19,7 +20,9 @@ color1 = (66, 132, 245)
 color2 = (0, 65, 179)
 
 # initialize assets
-snake_head = pygame.image.load("assets\snake_head.png")
+snake_head = pygame.image.load("assets/snake_head.png")
+apple = pygame.image.load("assets/apple.png")
+apple = pygame.transform.scale(apple, (50, 50))
 
 # function to draw background checkerboard pattern
 def draw_background(surface):
@@ -35,16 +38,31 @@ def draw_background(surface):
                 pygame.draw.rect(surface, color2, tile1)
 
 # position of the player (initialized at around the centre of the board)
-x_pos = 8 * tile_size
-y_pos = 7 * tile_size
+player_x_pos = 8 * tile_size
+player_y_pos = 7 * tile_size
+
+# position of fruit (interactive objects)
+fruit_x_pos =  tile_size
+fruit_y_pos = tile_size
+
+# TEMP
+counter = 1
 
 # vector velocities assure continuous movement
 velocity_x = 0
 velocity_y = 0
 
 def draw_player():
-    global x_pos, y_pos
-    window.blit(snake_head, (x_pos, y_pos))
+    global player_x_pos, player_y_pos
+    window.blit(snake_head, (player_x_pos, player_y_pos))
+
+def draw_fruit():
+    global fruit_x_pos, fruit_y_pos
+    random.seed()
+    x = random.randint(0,16)
+    y = random.randint(0,16)
+    window.blit(apple, (x*fruit_x_pos, y*fruit_y_pos))
+
 
 # TODO: include wall collisions
 def move_player():
@@ -64,7 +82,6 @@ def move_player():
         velocity_y = 0
 
 
-
 # initialize window
 window = pygame.display.set_mode((scr_width, scr_height))
 pygame.display.set_caption("PySnake!")
@@ -75,13 +92,14 @@ draw_background(background)
 
 # main function of the game
 def main():
-    global x_pos, y_pos
+    global player_x_pos, player_y_pos
     isRunning = True # flag for the main loop
     fps = 60
     clock = pygame.time.Clock()
     # main game loop
     while isRunning:
         clock.tick(fps) # capping framerate at 60
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 isRunning = False
@@ -90,11 +108,12 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     #TODO: add a warning message
                     isRunning = False
+
         # draw background onto window
         window.blit(background, (0,0))
         # add vector velocities to respective components
-        x_pos += velocity_x
-        y_pos += velocity_y
+        player_x_pos += velocity_x
+        player_y_pos += velocity_y
         draw_player()
         pygame.display.update()
     pygame.quit()
