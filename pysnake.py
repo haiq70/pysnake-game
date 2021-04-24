@@ -34,32 +34,34 @@ def draw_background(surface):
                 tile1 = pygame.Rect(x*tile_size, y*tile_size, tile_size, tile_size)
                 pygame.draw.rect(surface, color2, tile1)
 
-
+# position of the player (initialized at around the centre of the board)
 x_pos = 8 * tile_size
 y_pos = 7 * tile_size
 
+# vector velocities assure continuous movement
+velocity_x = 0
+velocity_y = 0
 
 def draw_player():
     global x_pos, y_pos
     window.blit(snake_head, (x_pos, y_pos))
 
-# TODO: implement continuous movement
 # TODO: include wall collisions
 def move_player():
-    global x_pos, y_pos
+    global velocity_x, velocity_y
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]:
-        y_pos -= tile_size
-        time.sleep(0.2)
+        velocity_y = -2
+        velocity_x = 0
     if keys[pygame.K_DOWN]:
-        y_pos += tile_size
-        time.sleep(0.2)
+        velocity_y = 2
+        velocity_x = 0
     if keys[pygame.K_LEFT]:
-        x_pos -= tile_size
-        time.sleep(0.2)
+        velocity_x = -2
+        velocity_y = 0
     if keys[pygame.K_RIGHT]:
-        x_pos += tile_size
-        time.sleep(0.2)
+        velocity_x = 2
+        velocity_y = 0
 
 
 
@@ -73,6 +75,7 @@ draw_background(background)
 
 # main function of the game
 def main():
+    global x_pos, y_pos
     isRunning = True # flag for the main loop
     fps = 60
     clock = pygame.time.Clock()
@@ -89,6 +92,9 @@ def main():
                     isRunning = False
         # draw background onto window
         window.blit(background, (0,0))
+        # add vector velocities to respective components
+        x_pos += velocity_x
+        y_pos += velocity_y
         draw_player()
         pygame.display.update()
     pygame.quit()
