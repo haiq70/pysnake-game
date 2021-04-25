@@ -1,8 +1,9 @@
 # classic snake game made with pygame module //haiq70
 # pygame documentation: https://www.pygame.org/docs/
 import pygame
-import time
 import random
+import tkinter as tk
+from tkinter import messagebox
 
 pygame.display.init()
 
@@ -10,6 +11,7 @@ pygame.display.init()
 # dimensions of the window
 scr_width = 800
 scr_height = 800
+
 # grid system for the checkerboard
 tile_size = 50      # 16 x 16 board
 grid_width = scr_width / tile_size  # place that many squares as the screen is wide
@@ -21,6 +23,7 @@ color2 = (0, 65, 179)
 
 # initialize assets
 snake_head = pygame.image.load("assets/snake_head.png")
+snake_head = pygame.transform.scale(snake_head, (40, 40))
 apple = pygame.image.load("assets/apple.png")
 apple = pygame.transform.scale(apple, (50, 50))
 
@@ -45,22 +48,18 @@ player_y_pos = 7 * tile_size
 fruit_x_pos =  tile_size
 fruit_y_pos = tile_size
 
-# TEMP
-counter = 1
-
 # vector velocities assure continuous movement
 velocity_x = 0
 velocity_y = 0
 
+
 def draw_player():
-    global player_x_pos, player_y_pos
     window.blit(snake_head, (player_x_pos, player_y_pos))
 
 def draw_fruit():
-    global fruit_x_pos, fruit_y_pos
     random.seed()
-    x = random.randint(0,16)
-    y = random.randint(0,16)
+    x = random.randint(0, grid_width)
+    y = random.randint(0, grid_height)
     window.blit(apple, (x*fruit_x_pos, y*fruit_y_pos))
 
 
@@ -102,12 +101,26 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                isRunning = False
+                root = tk.Tk()
+                root.wm_withdraw()
+                ans = tk.messagebox.askquestion("Warning", "Do you want to quit the game?")
+                if ans == 'yes':
+                    isRunning = False
+                    root.destroy()
+                else:
+                    root.destroy()
+
             if event.type == pygame.KEYDOWN:
                 move_player()
                 if event.key == pygame.K_ESCAPE:
-                    #TODO: add a warning message
-                    isRunning = False
+                    root = tk.Tk()
+                    root.wm_withdraw()
+                    ans = tk.messagebox.askquestion("Warning", "Do you want to quit the game?")
+                    if ans == 'yes':
+                        isRunning = False
+                        root.destroy()
+                    else:
+                        root.destroy()
 
         # draw background onto window
         window.blit(background, (0,0))
