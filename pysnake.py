@@ -162,10 +162,12 @@ def main():
 
         # handling collisions with screen boundaries
         if player_y_pos < velocity_y or player_y_pos > scr_height - player_size:
+            player_y_pos = 5 * tile_size
             velocity_y = 0
             game_over(player_length)
             launch_menu()
-        if player_x_pos < velocity_x or player_x_pos > scr_width - player_size:
+        elif player_x_pos < velocity_x or player_x_pos > scr_width - player_size:
+            player_x_pos = 4 * tile_size
             velocity_x = 0
             game_over(player_length)
             launch_menu()
